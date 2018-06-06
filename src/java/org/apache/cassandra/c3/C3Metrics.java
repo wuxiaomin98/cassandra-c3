@@ -4,4 +4,5 @@ public class C3Metrics
 {
     public static final String MU = "MU";
     public static final String QSZ = "QSZ";
+    public static final String WT = "WT";
 }

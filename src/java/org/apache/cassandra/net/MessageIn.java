@@ -42,6 +42,7 @@ public class MessageIn<T>
     public final Map<String, byte[]> parameters;
     public final MessagingService.Verb verb;
     public final int version;
+    private final long constructionTime;
 
     private MessageIn(InetAddress from, T payload, Map<String, byte[]> parameters, MessagingService.Verb verb, int version)
     {
@@ -50,6 +51,7 @@ public class MessageIn<T>
         this.parameters = parameters;
         this.verb = verb;
         this.version = version;
+        this.constructionTime = System.nanoTime();
     }
 
     public static <T> MessageIn<T> create(InetAddress from, T payload, Map<String, byte[]> parameters, MessagingService.Verb verb, int version)
@@ -119,6 +121,8 @@ public class MessageIn<T>
     {
         return DatabaseDescriptor.getTimeout(verb);
     }
+
+    public long getConstructionTime() { return constructionTime; }
 
     public String toString()
     {

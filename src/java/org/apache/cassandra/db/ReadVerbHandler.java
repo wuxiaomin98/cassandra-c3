@@ -47,6 +47,7 @@ public class ReadVerbHandler implements IVerbHandler<ReadCommand>
         AtomicInteger counter = MessagingService.instance().getPendingRequestsCounter(FBUtilities.getBroadcastAddress());
         counter.incrementAndGet();
         long start = System.nanoTime();
+        long waitingTimeNanos = start - message.getConstructionTime();
 
         ReadCommand command = message.payload;
         Keyspace keyspace = Keyspace.open(command.ksName);
@@ -69,7 +70,8 @@ public class ReadVerbHandler implements IVerbHandler<ReadCommand>
                          getResponse(command, row),
                          ReadResponse.serializer)
         .withParameter(C3Metrics.MU, ByteBufferUtil.bytes(serviceTimeInNanos).array())
-        .withParameter(C3Metrics.QSZ, ByteBufferUtil.bytes(queueSize).array());
+        .withParameter(C3Metrics.QSZ, ByteBufferUtil.bytes(queueSize).array())
+        .withParameter(C3Metrics.WT, ByteBufferUtil.bytes(waitingTimeNanos).array());
 
         Tracing.trace("Enqueuing response to {}", message.from);
         MessagingService.instance().sendReply(reply, id, message.from);

@@ -151,11 +151,12 @@ public class HostTracker
 
         int queueSize = ByteBuffer.wrap((byte[]) message.parameters.get(C3Metrics.QSZ)).getInt();
         double serviceTimeInMillis = ByteBuffer.wrap((byte[]) message.parameters.get(C3Metrics.MU)).getLong() / 1000000.0;
+        double waitingTimeInMillis = ByteBuffer.wrap((byte[]) message.parameters.get(C3Metrics.WT)).getLong() / 1000000.0;
         double latencyInMillis = latency / 1000000.0;
 
         assert serviceTimeInMillis < latencyInMillis;
         ScoreTracker scoreTracker = getScoreTracker(message.from);
-        scoreTracker.updateNodeScore(queueSize, serviceTimeInMillis, latencyInMillis);
+        scoreTracker.updateNodeScore(queueSize, serviceTimeInMillis, latencyInMillis, waitingTimeInMillis);
     }
 
     // Required for handling coordinator local reads correctly
@@ -167,7 +168,7 @@ public class HostTracker
         double latencyInMillis = serviceTimeInMillis;
 
         ScoreTracker scoreTracker = getScoreTracker(from);
-        scoreTracker.updateNodeScore(queueSize, serviceTimeInMillis, latencyInMillis);
+        scoreTracker.updateNodeScore(queueSize, serviceTimeInMillis, latencyInMillis, 0);
     }
 
 }

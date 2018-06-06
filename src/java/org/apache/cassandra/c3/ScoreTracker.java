@@ -12,9 +12,10 @@ public class ScoreTracker
     private double serviceTimeEMA = 0;
     private double responseTimeEMA = 0;
 
-    public synchronized void updateNodeScore(int queueSize, double serviceTime, double latency)
+    public synchronized void updateNodeScore(int queueSize, double serviceTime, double latency, double waitingTime)
     {
-        final double responseTime = latency - serviceTime;
+        final double responseTime = latency - serviceTime - waitingTime;
+        System.out.println(responseTime + " " + serviceTime + " " + waitingTime + " " + latency);
 
         queueSizeEMA = getEMA(queueSize, queueSizeEMA);
         serviceTimeEMA = getEMA(serviceTime, serviceTimeEMA);
