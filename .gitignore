@@ -1,5 +1,5 @@
 .gitignore
-
+cassandra-c3.eml
 # C*
 build/
 src/gen-java/
